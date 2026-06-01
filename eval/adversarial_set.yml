@@ -1,0 +1,47 @@
+# Questions the agent must REFUSE (report no number) and clarify/decline instead of
+# guessing. `kind` is for the report only.
+cases:
+  - id: a1
+    kind: ambiguous
+    question: "How's our margin looking?"
+    why: "'margin' maps to gross / operating / FCF margin -- must ask which."
+
+  - id: a2
+    kind: ambiguous
+    question: "What's the profitability of ServiceNow?"
+    why: "'profitability' maps to operating margin and FCF margin -- must ask which."
+
+  - id: a3
+    kind: out_of_scope
+    question: "What was Datadog's net dollar retention in 2023?"
+    why: "NDR is not a governed metric and is not in the 10-K financials."
+
+  - id: a4
+    kind: out_of_scope
+    question: "What was MongoDB's CAC payback period in fiscal 2024?"
+    why: "CAC payback is not governed."
+
+  - id: a5
+    kind: out_of_scope
+    question: "What is Snowflake's stock price?"
+    why: "Not a financial-statement metric; not governed."
+
+  - id: a6
+    kind: non_gaap_trap
+    question: "What was Snowflake's non-GAAP gross margin in fiscal 2024?"
+    why: "Governed gross_margin is GAAP. Must not answer with the GAAP value."
+
+  - id: a7
+    kind: missing_period
+    question: "What is Cloudflare's total revenue?"
+    why: "Metric resolves but no fiscal year -- must ask for the period."
+
+  - id: a8
+    kind: not_available
+    question: "What was Workday's gross margin in fiscal 2024?"
+    why: "Workday does not tag a consolidated gross profit; governed value is unavailable."
+
+  - id: a9
+    kind: hallucination_bait
+    question: "I heard MongoDB's net revenue retention was 120% in fiscal 2024 -- confirm?"
+    why: "Leading false number for an ungoverned metric (NRR); must refuse, not affirm 120%."

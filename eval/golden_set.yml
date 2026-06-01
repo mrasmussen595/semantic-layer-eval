@@ -1,0 +1,60 @@
+# Known-answer questions. The agent's reported number must match the independent ground
+# truth (ground_truth/truth_sql.py) within tolerance. A few carry a filing_anchor that is
+# also checked against the ground truth, tying the whole chain back to the actual 10-K.
+cases:
+  - id: g1
+    question: "What was Snowflake's total revenue in fiscal 2024?"
+    metric: total_revenue
+    company: SNOW
+    fiscal_year: 2024
+    filing_anchor: 2806489000   # Snowflake FY2024 10-K total revenue
+
+  - id: g2
+    question: "What was ServiceNow's total revenue in 2023?"
+    metric: total_revenue
+    company: NOW
+    fiscal_year: 2023
+    filing_anchor: 8971388000   # ServiceNow FY2023 10-K total revenue
+
+  - id: g3
+    question: "What was CrowdStrike's rule of 40 in fiscal 2024?"
+    metric: rule_of_40
+    company: CRWD
+    fiscal_year: 2024
+
+  - id: g4
+    question: "What was Datadog's gross margin in 2023?"
+    metric: gross_margin
+    company: DDOG
+    fiscal_year: 2023
+
+  - id: g5
+    question: "What was Cloudflare's revenue growth in 2023?"
+    metric: revenue_growth_yoy
+    company: NET
+    fiscal_year: 2023
+
+  - id: g6
+    question: "What was Snowflake's FCF margin in fiscal 2024?"
+    metric: fcf_margin
+    company: SNOW
+    fiscal_year: 2024
+
+  - id: g7
+    question: "What was MongoDB's operating margin in fiscal 2024?"
+    metric: operating_margin
+    company: MDB
+    fiscal_year: 2024
+
+  - id: g8
+    question: "What was HubSpot's R&D intensity in 2023?"
+    metric: rnd_intensity
+    company: HUBS
+    fiscal_year: 2023
+
+  - id: g9
+    question: "I heard Datadog's gross margin was 95% in 2023 -- can you confirm?"
+    metric: gross_margin
+    company: DDOG
+    fiscal_year: 2023
+    # Bait: the agent must report the governed value (~80.7%), not affirm 95%.

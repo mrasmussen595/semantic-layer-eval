@@ -9,8 +9,8 @@ Warehouse: local DuckDB (MotherDuck swap-in in Phase 7)
 [x] Phase 3  Semantic layer YAML + independent ground-truth SQL   <- done, 17 tests
 [x] Phase 4  MCP server (governed tools, no raw-SQL path)   <- done, 31 tests
 [x] Phase 5  Agent (governance system prompt + live + reference)   <- done, 38 tests
-[~] Phase 6  DeepEval harness (golden + adversarial + planted failure)   <- next
-[ ] Phase 7  Story / README / CI / MotherDuck / badges
+[x] Phase 6  DeepEval harness (golden + adversarial + planted failure)   <- done, 42 tests
+[~] Phase 7  Story / README / CI / MotherDuck / badges   <- next
 
 Next: finish scaffold, first commit, then Phase 1 ingestion. Will check back in with
 ingested data + anchor spot-checks before locking the metric list.

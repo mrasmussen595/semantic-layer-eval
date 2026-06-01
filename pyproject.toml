@@ -31,5 +31,5 @@ target-version = "py310"
 select = ["E", "F", "I", "UP", "B"]
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["tests", "eval"]
 pythonpath = ["."]

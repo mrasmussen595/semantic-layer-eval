@@ -18,9 +18,23 @@ from __future__ import annotations
 from agent.base import AgentResponse, extract_company, extract_fiscal_year
 from mcp_server import tools
 
+# Qualifiers that signal a non-governed VARIANT of a metric (the governed layer is GAAP,
+# as-reported). e.g. "non-GAAP gross margin" must not be answered with the GAAP value.
+UNGOVERNED_QUALIFIERS = ("non-gaap", "non gaap", "adjusted", "pro forma", "constant currency")
+
 
 def answer(question: str) -> AgentResponse:
     trace: list[dict] = []
+
+    lowered = question.lower()
+    for q in UNGOVERNED_QUALIFIERS:
+        if q in lowered:
+            return AgentResponse(
+                question, refused=True, text=(
+                    f"The governed metrics are GAAP, as-reported. A '{q}' variant is not "
+                    "governed here; I won't present the GAAP figure as if it were that."
+                ), tool_trace=trace,
+            )
 
     res = tools.resolve_metric(question)
     trace.append({"tool": "resolve_metric", "args": {"text": question}, "result": res})

@@ -1,6 +1,6 @@
 {
   "project": "Governing the AI Analyst - semantic layer + MCP + DeepEval over real SEC SaaS financials",
-  "current_phase": 6,
+  "current_phase": 7,
   "warehouse_mode": "local-duckdb",
   "pinned_versions": {
     "mcp": "1.27.2",
@@ -82,14 +82,15 @@
     {
       "id": 6,
       "name": "Eval",
-      "status": "pending",
+      "status": "done",
       "deliverables": [
         "verify DeepEval current API",
         "golden set",
         "adversarial set",
         "planted-failure case",
         "readable report"
-      ]
+      ],
+      "notes": "DeepEval 4.0.5 verified. eval/metrics.py: two deterministic BaseMetric subclasses (GovernedNumericAccuracy, GovernedRefusal). golden_set.yml (9 known-answer, 2 filing-anchored) + adversarial_set.yml (9: ambiguous/out-of-scope/non-GAAP-trap/missing-period/not-available/hallucination-bait). harness.py runs reference (offline) or live Claude (AGENT_USE_LLM=1), writes eval/report/eval_report.{md,json}, demonstrates planted wrong number caught. Reference agent: golden 9/9, adversarial 9/9, planted caught. 42 tests pass."
     },
     {
       "id": 7,
