@@ -1,0 +1,27 @@
+version: 2
+
+models:
+  - name: fct_company_year
+    description: >
+      Canonical financial base, one row per (company, fiscal year). The semantic layer's
+      metrics compile against this table.
+    columns:
+      - name: ticker
+        description: Company ticker (one of the 10 governed companies).
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [CRM, SNOW, DDOG, CRWD, NOW, WDAY, HUBS, TEAM, MDB, NET]
+          - relationships:
+              arguments:
+                to: ref('stg_companies')
+                field: ticker
+      - name: fiscal_year
+        description: Calendar year of the fiscal period end; equals each company's own FY number.
+        tests:
+          - not_null
+      - name: total_revenue
+        description: Canonical GAAP total revenue (coalesced across candidate XBRL tags).
+        tests:
+          - not_null

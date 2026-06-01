@@ -1,6 +1,6 @@
 {
   "project": "Governing the AI Analyst - semantic layer + MCP + DeepEval over real SEC SaaS financials",
-  "current_phase": 2,
+  "current_phase": 3,
   "warehouse_mode": "local-duckdb",
   "pinned_versions": {
     "mcp": "1.27.2",
@@ -32,7 +32,8 @@
     {
       "id": 2,
       "name": "dbt transform",
-      "status": "pending",
+      "status": "done",
+      "notes": "staging tag-normalization (coalesce candidate XBRL tags) -> marts.fct_company_year (116 company-years). 11/11 dbt tests pass incl. anchor test vs filings + uniqueness + accepted_values + relationships. WDAY gross_profit null by design. Metrics locked: total_revenue, revenue_growth_yoy, gross_margin, operating_margin, rnd_intensity, fcf_margin, rule_of_40.",
       "deliverables": [
         "staging models (XBRL tag normalization)", "marts: fct_company_year",
         "schema tests", "anchor spot-checks vs real 10-Ks"

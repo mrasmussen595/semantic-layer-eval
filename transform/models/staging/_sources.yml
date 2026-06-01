@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: raw
+    description: Raw EDGAR 10-K facts landed by ingest/fetch_edgar.py (or load_fixture.py).
+    tables:
+      - name: facts
+        description: Long-format annual us-gaap facts, one row per (concept, period_end).
+      - name: companies
+        description: The 10 governed SaaS companies (ticker, cik, name, fiscal_year_end).

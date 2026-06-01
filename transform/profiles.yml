@@ -5,5 +5,7 @@ edgar_transform:
   outputs:
     dev:
       type: duckdb
-      path: "../warehouse/edgar.duckdb"
+      # Path is relative to the directory dbt is invoked from (repo root). Override with
+      # EDGAR_DB for absolute paths or the MotherDuck swap-in (Phase 7).
+      path: "{{ env_var('EDGAR_DB', 'warehouse/edgar.duckdb') }}"
       threads: 4

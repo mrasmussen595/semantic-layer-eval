@@ -5,8 +5,8 @@ Warehouse: local DuckDB (MotherDuck swap-in in Phase 7)
 
 [x] Phase 0  Scaffold              <- done (uv env resolves; dbt+deepeval+mcp coexist)
 [x] Phase 1  Ingestion (EDGAR 10-K facts -> raw.*)   <- done; anchors verified vs filings
-[~] Phase 2  dbt transform (staging -> marts, schema tests, anchor checks)   <- next
-[ ] Phase 3  Semantic layer YAML + independent ground-truth SQL
+[x] Phase 2  dbt transform (staging -> marts, schema tests, anchor checks)   <- done, 11/11
+[~] Phase 3  Semantic layer YAML + independent ground-truth SQL   <- next
 [ ] Phase 4  MCP server (governed tools, no raw-SQL path)
 [ ] Phase 5  Agent (governance system prompt)
 [ ] Phase 6  DeepEval harness (golden + adversarial + planted failure)
