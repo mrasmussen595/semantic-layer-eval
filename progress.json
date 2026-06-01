@@ -1,6 +1,6 @@
 {
   "project": "Governing the AI Analyst - semantic layer + MCP + DeepEval over real SEC SaaS financials",
-  "current_phase": 5,
+  "current_phase": 6,
   "warehouse_mode": "local-duckdb",
   "pinned_versions": {
     "mcp": "1.27.2",
@@ -72,11 +72,12 @@
     {
       "id": 5,
       "name": "Agent",
-      "status": "pending",
+      "status": "done",
       "deliverables": [
         "governance system prompt",
         "Claude wired to MCP tools only"
-      ]
+      ],
+      "notes": "agent/system_prompt.md governance prompt; analyst.py live Claude agent (tool-use loop, final_answer terminator, model via AGENT_MODEL default sonnet-4-6) - structurally tested, not run live (no API key in env); reference_agent.py deterministic governed agent for offline eval/CI, demonstrates answer + ambiguous/out-of-scope/unavailable/missing-period refusals. 38 tests pass."
     },
     {
       "id": 6,
