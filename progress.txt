@@ -7,8 +7,8 @@ Warehouse: local DuckDB (MotherDuck swap-in in Phase 7)
 [x] Phase 1  Ingestion (EDGAR 10-K facts -> raw.*)   <- done; anchors verified vs filings
 [x] Phase 2  dbt transform (staging -> marts, schema tests, anchor checks)   <- done, 11/11
 [x] Phase 3  Semantic layer YAML + independent ground-truth SQL   <- done, 17 tests
-[~] Phase 4  MCP server (governed tools, no raw-SQL path)   <- next
-[ ] Phase 5  Agent (governance system prompt)
+[x] Phase 4  MCP server (governed tools, no raw-SQL path)   <- done, 31 tests
+[~] Phase 5  Agent (governance system prompt)   <- next
 [ ] Phase 6  DeepEval harness (golden + adversarial + planted failure)
 [ ] Phase 7  Story / README / CI / MotherDuck / badges
 

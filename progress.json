@@ -1,6 +1,6 @@
 {
   "project": "Governing the AI Analyst - semantic layer + MCP + DeepEval over real SEC SaaS financials",
-  "current_phase": 4,
+  "current_phase": 5,
   "warehouse_mode": "local-duckdb",
   "pinned_versions": {
     "mcp": "1.27.2",
@@ -15,8 +15,14 @@
       "name": "Scaffold",
       "status": "done",
       "deliverables": [
-        "repo layout", "uv/pyproject", ".env.example", "MIT license",
-        "README skeleton (thesis)", "init.sh", "progress trackers", "git init + first commit"
+        "repo layout",
+        "uv/pyproject",
+        ".env.example",
+        "MIT license",
+        "README skeleton (thesis)",
+        "init.sh",
+        "progress trackers",
+        "git init + first commit"
       ]
     },
     {
@@ -35,8 +41,10 @@
       "status": "done",
       "notes": "staging tag-normalization (coalesce candidate XBRL tags) -> marts.fct_company_year (116 company-years). 11/11 dbt tests pass incl. anchor test vs filings + uniqueness + accepted_values + relationships. WDAY gross_profit null by design. Metrics locked: total_revenue, revenue_growth_yoy, gross_margin, operating_margin, rnd_intensity, fcf_margin, rule_of_40.",
       "deliverables": [
-        "staging models (XBRL tag normalization)", "marts: fct_company_year",
-        "schema tests", "anchor spot-checks vs real 10-Ks"
+        "staging models (XBRL tag normalization)",
+        "marts: fct_company_year",
+        "schema tests",
+        "anchor spot-checks vs real 10-Ks"
       ]
     },
     {
@@ -45,32 +53,41 @@
       "status": "done",
       "notes": "metrics.yml (7 governed metrics, single source of truth) + loader with sql_expression column-allowlist validation + resolver (longest-phrase precedence: 'gross margin' resolves, bare 'margin' ambiguous, out-of-scope refuses). Independent hand-written ground-truth SQL (no compiler reuse). db.py is the MotherDuck swap-in seam. 17 unit tests pass.",
       "deliverables": [
-        "finalize metric list against ingested data", "metrics.yml + loader/validation",
+        "finalize metric list against ingested data",
+        "metrics.yml + loader/validation",
         "independent hand-written ground-truth SQL anchored to filings"
       ]
     },
     {
       "id": 4,
       "name": "MCP server",
-      "status": "pending",
+      "status": "done",
       "deliverables": [
         "list_metrics / get_metric_definition / query_metric / resolve",
-        "compiler (metric def -> SQL, no raw-SQL path)", "no-raw-sql guard tests"
-      ]
+        "compiler (metric def -> SQL, no raw-SQL path)",
+        "no-raw-sql guard tests"
+      ],
+      "notes": "compiler.py compiles definition->parameterized SQL (no raw-SQL path: expr from validated definition, filter columns from fixed map, values bound). tools.py: list_metrics/get_metric_definition/resolve_metric/query_metric shared by MCP server + agent. server.py FastMCP (stdio) exposes exactly those 4 tools. 31 tests pass incl. injection/guard tests."
     },
     {
       "id": 5,
       "name": "Agent",
       "status": "pending",
-      "deliverables": ["governance system prompt", "Claude wired to MCP tools only"]
+      "deliverables": [
+        "governance system prompt",
+        "Claude wired to MCP tools only"
+      ]
     },
     {
       "id": 6,
       "name": "Eval",
       "status": "pending",
       "deliverables": [
-        "verify DeepEval current API", "golden set", "adversarial set",
-        "planted-failure case", "readable report"
+        "verify DeepEval current API",
+        "golden set",
+        "adversarial set",
+        "planted-failure case",
+        "readable report"
       ]
     },
     {
@@ -78,8 +95,10 @@
       "name": "Story / polish",
       "status": "pending",
       "deliverables": [
-        "README narrative + architecture diagram + demo", "CI green",
-        "MotherDuck swap-in", "badges"
+        "README narrative + architecture diagram + demo",
+        "CI green",
+        "MotherDuck swap-in",
+        "badges"
       ]
     }
   ]
