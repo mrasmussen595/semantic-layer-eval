@@ -1,6 +1,6 @@
 {
   "project": "Governing the AI Analyst - semantic layer + MCP + DeepEval over real SEC SaaS financials",
-  "current_phase": 3,
+  "current_phase": 4,
   "warehouse_mode": "local-duckdb",
   "pinned_versions": {
     "mcp": "1.27.2",
@@ -42,7 +42,8 @@
     {
       "id": 3,
       "name": "Semantic layer + ground truth",
-      "status": "pending",
+      "status": "done",
+      "notes": "metrics.yml (7 governed metrics, single source of truth) + loader with sql_expression column-allowlist validation + resolver (longest-phrase precedence: 'gross margin' resolves, bare 'margin' ambiguous, out-of-scope refuses). Independent hand-written ground-truth SQL (no compiler reuse). db.py is the MotherDuck swap-in seam. 17 unit tests pass.",
       "deliverables": [
         "finalize metric list against ingested data", "metrics.yml + loader/validation",
         "independent hand-written ground-truth SQL anchored to filings"

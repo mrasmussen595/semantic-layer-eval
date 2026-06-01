@@ -1,0 +1,125 @@
+# GOVERNED SEMANTIC LAYER — single source of truth for every metric.
+#
+# Every metric has exactly one definition. The MCP server compiles SQL ONLY from this
+# file; the agent can never run raw SQL. `sql_expression` is a per-row expression over
+# the canonical mart (main_marts.fct_company_year), so each metric is fully self-contained.
+#
+# `synonyms` drive resolution. Deliberately overlapping synonyms (e.g. "margin") map to
+# multiple metrics so the resolver must return "needs clarification" instead of guessing.
+
+version: 1
+source_table: main_marts.fct_company_year
+grain: company_year
+
+# Columns the compiler is allowed to reference. sql_expression is validated against this
+# allowlist at load time — anything else is rejected as a definition error.
+allowed_columns:
+  - total_revenue
+  - prev_total_revenue
+  - cost_of_revenue
+  - gross_profit
+  - operating_income
+  - rnd_expense
+  - operating_cash_flow
+  - capex
+
+dimensions:
+  company:
+    column: ticker
+    description: Company ticker (one of the 10 governed SaaS companies).
+
+time:
+  column: fiscal_year
+  grain: fiscal_year
+  description: Company's own fiscal year (calendar year of the fiscal period end).
+
+owner_default: analytics@company.com
+
+metrics:
+  - name: total_revenue
+    label: Total Revenue
+    description: GAAP total revenue for the fiscal year, in USD.
+    synonyms: [revenue, total revenue, sales, top line, net revenue]
+    sql_expression: total_revenue
+    format: usd
+    grain: company_year
+    dimensions: [company]
+    filters: [company, fiscal_year]
+    owner: analytics@company.com
+
+  - name: revenue_growth_yoy
+    label: Revenue Growth (YoY)
+    description: Year-over-year growth in GAAP total revenue versus the prior fiscal year.
+    synonyms: [revenue growth, growth, yoy growth, top line growth, sales growth]
+    sql_expression: (total_revenue - prev_total_revenue) / prev_total_revenue
+    format: percent
+    grain: company_year
+    dimensions: [company]
+    filters: [company, fiscal_year]
+    owner: analytics@company.com
+
+  - name: gross_margin
+    label: Gross Margin (GAAP)
+    description: >
+      GAAP gross profit divided by total revenue. GAAP basis: cost of revenue includes
+      stock-based compensation. Not available for companies that do not tag a consolidated
+      gross profit / cost of revenue (e.g. Workday) -- returns no value rather than guessing.
+    synonyms: [gross margin, gm, gross profit margin, margin]
+    sql_expression: gross_profit / total_revenue
+    format: percent
+    grain: company_year
+    dimensions: [company]
+    filters: [company, fiscal_year]
+    owner: analytics@company.com
+
+  - name: operating_margin
+    label: Operating Margin (GAAP)
+    description: GAAP operating income (loss) divided by total revenue.
+    synonyms: [operating margin, op margin, ebit margin, margin, profitability]
+    sql_expression: operating_income / total_revenue
+    format: percent
+    grain: company_year
+    dimensions: [company]
+    filters: [company, fiscal_year]
+    owner: analytics@company.com
+
+  - name: rnd_intensity
+    label: R&D Intensity
+    description: Research & development expense divided by total revenue.
+    synonyms: [r&d intensity, rnd intensity, research and development intensity, r&d ratio]
+    sql_expression: rnd_expense / total_revenue
+    format: percent
+    grain: company_year
+    dimensions: [company]
+    filters: [company, fiscal_year]
+    owner: analytics@company.com
+
+  - name: fcf_margin
+    label: Free Cash Flow Margin
+    description: >
+      Free cash flow (operating cash flow minus capital expenditures) divided by total
+      revenue. Governed FCF definition: OCF - capex.
+    synonyms: [fcf margin, free cash flow margin, cash flow margin, margin, profitability]
+    sql_expression: (operating_cash_flow - capex) / total_revenue
+    format: percent
+    grain: company_year
+    dimensions: [company]
+    filters: [company, fiscal_year]
+    owner: analytics@company.com
+
+  - name: rule_of_40
+    label: Rule of 40
+    description: >
+      Revenue growth (YoY) plus FCF margin, expressed in percentage points. The second
+      term is genuinely contested in practice (FCF margin vs operating margin vs EBITDA
+      margin); this governed definition pins it to FCF MARGIN. Reported as a number where,
+      e.g., 40 means the company sums to 40%.
+    synonyms: [rule of 40, rule-of-40, r40, rule of forty]
+    sql_expression: >
+      100 * (((total_revenue - prev_total_revenue) / prev_total_revenue)
+             + ((operating_cash_flow - capex) / total_revenue))
+    format: points
+    grain: company_year
+    dimensions: [company]
+    filters: [company, fiscal_year]
+    owner: analytics@company.com
