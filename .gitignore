@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# Env / secrets
+.env
+
+# DuckDB working database (rebuilt from ingest + dbt; never committed)
+warehouse/*.duckdb
+warehouse/*.duckdb.wal
+
+# dbt
+transform/target/
+transform/dbt_packages/
+transform/logs/
+
+# Eval output
+eval/report/*.json
+eval/report/*.html
+
+# OS
+.DS_Store

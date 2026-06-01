@@ -1,0 +1,17 @@
+name: edgar_transform
+version: "0.1.0"
+config-version: 2
+profile: edgar_transform
+
+model-paths: ["models"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+models:
+  edgar_transform:
+    staging:
+      +materialized: view
+      +schema: staging
+    marts:
+      +materialized: table
+      +schema: marts

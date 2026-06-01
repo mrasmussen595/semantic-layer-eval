@@ -1,0 +1,35 @@
+# The 10 SaaS companies the semantic layer governs.
+# CIK is resolved at ingest time from SEC's company_tickers.json (so we never hardcode a
+# possibly-stale CIK). Fiscal-year-end is informational; the real fiscal calendar is
+# derived in dbt from the actual XBRL period dates.
+companies:
+  - ticker: CRM
+    name: Salesforce, Inc.
+    fiscal_year_end: "01-31"
+  - ticker: SNOW
+    name: Snowflake Inc.
+    fiscal_year_end: "01-31"
+  - ticker: DDOG
+    name: Datadog, Inc.
+    fiscal_year_end: "12-31"
+  - ticker: CRWD
+    name: CrowdStrike Holdings, Inc.
+    fiscal_year_end: "01-31"
+  - ticker: NOW
+    name: ServiceNow, Inc.
+    fiscal_year_end: "12-31"
+  - ticker: WDAY
+    name: Workday, Inc.
+    fiscal_year_end: "01-31"
+  - ticker: HUBS
+    name: HubSpot, Inc.
+    fiscal_year_end: "12-31"
+  - ticker: TEAM
+    name: Atlassian Corporation
+    fiscal_year_end: "06-30"
+  - ticker: MDB
+    name: MongoDB, Inc.
+    fiscal_year_end: "01-31"
+  - ticker: NET
+    name: Cloudflare, Inc.
+    fiscal_year_end: "12-31"

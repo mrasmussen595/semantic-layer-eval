@@ -1,0 +1,83 @@
+{
+  "project": "Governing the AI Analyst - semantic layer + MCP + DeepEval over real SEC SaaS financials",
+  "current_phase": 1,
+  "warehouse_mode": "local-duckdb",
+  "pinned_versions": {
+    "mcp": "1.27.2",
+    "anthropic": "0.105.2",
+    "deepeval": "4.0.5",
+    "dbt-duckdb": "1.10.1",
+    "duckdb": "1.5.3"
+  },
+  "phases": [
+    {
+      "id": 0,
+      "name": "Scaffold",
+      "status": "done",
+      "deliverables": [
+        "repo layout", "uv/pyproject", ".env.example", "MIT license",
+        "README skeleton (thesis)", "init.sh", "progress trackers", "git init + first commit"
+      ]
+    },
+    {
+      "id": 1,
+      "name": "Ingestion",
+      "status": "pending",
+      "deliverables": [
+        "fetch_edgar.py: companyfacts API -> filter 10-K/FY facts -> raw.* in DuckDB",
+        "frozen raw fixture committed for offline CI"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "dbt transform",
+      "status": "pending",
+      "deliverables": [
+        "staging models (XBRL tag normalization)", "marts: fct_company_year",
+        "schema tests", "anchor spot-checks vs real 10-Ks"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Semantic layer + ground truth",
+      "status": "pending",
+      "deliverables": [
+        "finalize metric list against ingested data", "metrics.yml + loader/validation",
+        "independent hand-written ground-truth SQL anchored to filings"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "MCP server",
+      "status": "pending",
+      "deliverables": [
+        "list_metrics / get_metric_definition / query_metric / resolve",
+        "compiler (metric def -> SQL, no raw-SQL path)", "no-raw-sql guard tests"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Agent",
+      "status": "pending",
+      "deliverables": ["governance system prompt", "Claude wired to MCP tools only"]
+    },
+    {
+      "id": 6,
+      "name": "Eval",
+      "status": "pending",
+      "deliverables": [
+        "verify DeepEval current API", "golden set", "adversarial set",
+        "planted-failure case", "readable report"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Story / polish",
+      "status": "pending",
+      "deliverables": [
+        "README narrative + architecture diagram + demo", "CI green",
+        "MotherDuck swap-in", "badges"
+      ]
+    }
+  ]
+}

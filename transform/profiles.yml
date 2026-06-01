@@ -1,0 +1,9 @@
+# Local DuckDB target. The same database file the ingest step writes raw.* into.
+# MotherDuck swap-in (Phase 7) replaces `path` with "md:<db>" + the MOTHERDUCK_TOKEN env.
+edgar_transform:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: "../warehouse/edgar.duckdb"
+      threads: 4
