@@ -22,5 +22,9 @@ transform/logs/
 eval/report/*.json
 eval/report/*.html
 
+# Raw EDGAR companyfacts JSON: large (~25MB), re-fetchable. The small parquet snapshot
+# under fixtures/ is committed instead for reproducible offline builds.
+fixtures/companyfacts/
+
 # OS
 .DS_Store

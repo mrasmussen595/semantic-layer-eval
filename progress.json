@@ -1,6 +1,6 @@
 {
   "project": "Governing the AI Analyst - semantic layer + MCP + DeepEval over real SEC SaaS financials",
-  "current_phase": 1,
+  "current_phase": 2,
   "warehouse_mode": "local-duckdb",
   "pinned_versions": {
     "mcp": "1.27.2",
@@ -22,7 +22,8 @@
     {
       "id": 1,
       "name": "Ingestion",
-      "status": "pending",
+      "status": "done",
+      "notes": "1121 annual 10-K facts across 10 cos; anchors match filings exactly (CRM FY24 34.857B, SNOW FY24 2.806B, etc). 13KB parquet snapshot committed for offline CI. Known gap: WDAY no single GrossProfit/CostOfRevenue tag; RPO inconsistent.",
       "deliverables": [
         "fetch_edgar.py: companyfacts API -> filter 10-K/FY facts -> raw.* in DuckDB",
         "frozen raw fixture committed for offline CI"
