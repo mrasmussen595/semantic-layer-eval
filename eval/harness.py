@@ -29,7 +29,9 @@ DEFAULT_TOL = 0.005
 
 
 def get_agent() -> tuple[Callable[[str], AgentResponse], str]:
-    if os.environ.get("AGENT_USE_LLM") == "1" and os.environ.get("ANTHROPIC_API_KEY"):
+    if os.environ.get("AGENT_USE_LLM") == "1":
+        if not os.environ.get("ANTHROPIC_API_KEY"):
+            raise SystemExit("ANTHROPIC_API_KEY is required when AGENT_USE_LLM=1")
         from agent import analyst
 
         model = os.environ.get("AGENT_MODEL", "claude-sonnet-4-6")

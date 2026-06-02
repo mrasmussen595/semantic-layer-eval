@@ -52,3 +52,11 @@ def test_harness_exits_nonzero_when_eval_fails(monkeypatch, tmp_path):
         harness.main()
 
     assert (tmp_path / "eval_report.md").exists()
+
+
+def test_live_mode_requires_api_key(monkeypatch):
+    monkeypatch.setenv("AGENT_USE_LLM", "1")
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+
+    with pytest.raises(SystemExit, match="ANTHROPIC_API_KEY"):
+        harness.get_agent()
