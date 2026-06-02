@@ -35,6 +35,11 @@ time:
 
 owner_default: analytics@company.com
 
+# Ungoverned phrases that contain a governed synonym. Resolve these before metric
+# synonyms so requests such as "net revenue retention" cannot fall through to revenue.
+out_of_scope_phrases:
+  - net revenue retention
+
 metrics:
   - name: total_revenue
     label: Total Revenue

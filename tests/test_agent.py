@@ -9,6 +9,7 @@ from types import SimpleNamespace
 import pytest
 
 from agent import analyst, reference_agent
+from agent.base import extract_company
 from ground_truth.truth_sql import ground_truth
 
 
@@ -42,6 +43,22 @@ def test_reference_agent_refuses_when_period_missing():
     r = reference_agent.answer("What is Snowflake's total revenue?")
     assert r.refused is True
     assert r.value is None
+
+
+@pytest.mark.parametrize(
+    "question",
+    [
+        "What is total revenue now in 2023?",
+        "What was net revenue in 2023?",
+        "What was our team's revenue in 2023?",
+    ],
+)
+def test_company_extraction_does_not_treat_common_words_as_tickers(question):
+    assert extract_company(question) is None
+
+
+def test_company_extraction_accepts_uppercase_ticker():
+    assert extract_company("What was NOW revenue in 2023?") == "NOW"
 
 
 # ---- live agent wiring (no API call) ----------------------------------------

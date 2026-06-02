@@ -62,6 +62,7 @@ class SemanticLayer:
     time_column: str
     metrics: dict[str, Metric]
     _synonym_index: dict[str, frozenset[str]]
+    _out_of_scope_phrases: tuple[str, ...]
 
     # ---- loading -------------------------------------------------------------
     @classmethod
@@ -104,6 +105,9 @@ class SemanticLayer:
             time_column=time_col,
             metrics=metrics,
             _synonym_index={k: frozenset(v) for k, v in synonym_index.items()},
+            _out_of_scope_phrases=tuple(
+                phrase.lower() for phrase in raw.get("out_of_scope_phrases", [])
+            ),
         )
 
     @staticmethod
@@ -132,6 +136,14 @@ class SemanticLayer:
         terms surface every candidate for clarification.
         """
         t = text.lower()
+        if any(self._phrase_present(phrase, t) for phrase in self._out_of_scope_phrases):
+            return ResolutionResult(
+                Resolution.OUT_OF_SCOPE,
+                message=(
+                    "No governed metric matches this request. Governed metrics: "
+                    + ", ".join(sorted(self.metrics))
+                ),
+            )
         matched: list[tuple[frozenset[str], frozenset[str]]] = []  # (tokens, metrics)
         for syn, metric_names in self._synonym_index.items():
             if self._phrase_present(syn, t):

@@ -45,6 +45,7 @@ def _company_keywords() -> dict[str, str]:
 
 
 COMPANY_KEYWORDS = _company_keywords()
+TICKERS = frozenset(COMPANY_KEYWORDS.values())
 
 
 def extract_company(text: str) -> str | None:
@@ -53,8 +54,13 @@ def extract_company(text: str) -> str | None:
     found = {
         ticker
         for kw, ticker in COMPANY_KEYWORDS.items()
-        if re.search(rf"(?<!\w){re.escape(kw)}(?!\w)", t)
+        if kw != ticker.lower() and re.search(rf"(?<!\w){re.escape(kw)}(?!\w)", t)
     }
+    found.update(
+        ticker
+        for ticker in TICKERS
+        if re.search(rf"(?<!\w){re.escape(ticker)}(?!\w)", text)
+    )
     return next(iter(found)) if len(found) == 1 else None
 
 

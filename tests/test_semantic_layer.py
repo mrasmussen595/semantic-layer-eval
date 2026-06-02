@@ -55,6 +55,7 @@ def test_expression_validation_rejects_unknown_column(sl: SemanticLayer):
         ("profitability", Resolution.AMBIGUOUS, None),
         ("gross margin and operating margin", Resolution.AMBIGUOUS, None),
         ("net dollar retention", Resolution.OUT_OF_SCOPE, []),
+        ("net revenue retention", Resolution.OUT_OF_SCOPE, []),
         ("what is the stock price", Resolution.OUT_OF_SCOPE, []),
     ],
 )
