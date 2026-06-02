@@ -13,7 +13,7 @@ import json
 import os
 from pathlib import Path
 
-from agent.base import AgentResponse
+from agent.base import AgentResponse, extract_company, extract_fiscal_year
 from mcp_server import tools
 
 SYSTEM_PROMPT = (Path(__file__).resolve().parent / "system_prompt.md").read_text()
@@ -87,7 +87,12 @@ _DISPATCH = {
 }
 
 
-def _has_query_provenance(answer: dict, trace: list[dict]) -> bool:
+def _has_query_provenance(question: str, answer: dict, trace: list[dict]) -> bool:
+    if (
+        extract_company(question) != answer.get("company")
+        or extract_fiscal_year(question) != answer.get("fiscal_year")
+    ):
+        return False
     resolved = False
     for call in trace:
         if call["tool"] == "resolve_metric":
@@ -144,7 +149,7 @@ def answer(question: str, model: str = DEFAULT_MODEL) -> AgentResponse:
         for tu in tool_uses:
             if tu.name == "final_answer":
                 a = tu.input
-                if not a.get("refused", True) and not _has_query_provenance(a, trace):
+                if not a.get("refused", True) and not _has_query_provenance(question, a, trace):
                     return AgentResponse(
                         question=question,
                         refused=True,

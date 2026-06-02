@@ -45,6 +45,12 @@ def test_reference_agent_refuses_when_period_missing():
     assert r.value is None
 
 
+def test_reference_agent_refuses_multiple_periods():
+    r = reference_agent.answer("Compare Snowflake total revenue in fiscal 2023 and fiscal 2024")
+    assert r.refused is True
+    assert r.value is None
+
+
 @pytest.mark.parametrize(
     "question",
     [
@@ -164,3 +170,41 @@ def test_live_agent_accepts_answer_with_query_provenance(monkeypatch):
 
     assert r.refused is False
     assert r.value == 2806489000.0
+
+
+def test_live_agent_rejects_single_answer_for_multiple_periods():
+    question = "Compare Snowflake total revenue in fiscal 2023 and fiscal 2024"
+    answer = {
+        "refused": False,
+        "value": 2065659000.0,
+        "metric": "total_revenue",
+        "company": "SNOW",
+        "fiscal_year": 2023,
+    }
+    trace = [
+        {
+            "tool": "resolve_metric",
+            "args": {"text": question},
+            "result": {"status": "resolved", "metrics": ["total_revenue"], "message": ""},
+        },
+        {
+            "tool": "query_metric",
+            "args": {
+                "metric": "total_revenue",
+                "filters": {"company": "SNOW", "fiscal_year": 2023},
+            },
+            "result": {
+                "status": "ok",
+                "rows": [
+                    {
+                        "ticker": "SNOW",
+                        "fiscal_year": 2023,
+                        "value": 2065659000.0,
+                        "available": True,
+                    },
+                ],
+            },
+        },
+    ]
+
+    assert analyst._has_query_provenance(question, answer, trace) is False

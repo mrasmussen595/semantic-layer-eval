@@ -65,5 +65,5 @@ def extract_company(text: str) -> str | None:
 
 
 def extract_fiscal_year(text: str) -> int | None:
-    m = _YEAR.search(text)
-    return int(m.group(1)) if m else None
+    years = {int(year) for year in _YEAR.findall(text)}
+    return next(iter(years)) if len(years) == 1 else None
