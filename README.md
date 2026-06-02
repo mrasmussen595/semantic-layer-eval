@@ -190,9 +190,10 @@ AGENT_USE_LLM=1 uv run python -m eval.harness # live Claude agent (needs ANTHROP
 
 ### MotherDuck
 
-Development runs on local DuckDB. `db.py` is the single swap-in seam: set `MOTHERDUCK_TOKEN`
-(and optionally `MOTHERDUCK_DATABASE`) and the same code reads from MotherDuck instead. No
-other change is required.
+Development runs on local DuckDB. Set `EDGAR_DB` to route ingestion, dbt, and governed
+reads to another local DuckDB file. For governed reads against an existing MotherDuck
+database, set `MOTHERDUCK_TOKEN` and optionally `MOTHERDUCK_DATABASE`. Provisioning and
+dbt builds for MotherDuck are not automated by this repository.
 
 ### Data source & license
 

@@ -11,9 +11,11 @@ from pathlib import Path
 
 import duckdb
 
+from db import get_local_db_path
+
 ROOT = Path(__file__).resolve().parent.parent
 FIXTURES = ROOT / "fixtures"
-DB_PATH = ROOT / "warehouse" / "edgar.duckdb"
+DB_PATH = get_local_db_path()
 
 
 def main() -> None:

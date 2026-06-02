@@ -1,11 +1,10 @@
 # Local DuckDB target. The same database file the ingest step writes raw.* into.
-# MotherDuck swap-in (Phase 7) replaces `path` with "md:<db>" + the MOTHERDUCK_TOKEN env.
 edgar_transform:
   target: dev
   outputs:
     dev:
       type: duckdb
       # Path is relative to the directory dbt is invoked from (repo root). Override with
-      # EDGAR_DB for absolute paths or the MotherDuck swap-in (Phase 7).
+      # EDGAR_DB routes all local pipeline stages to the same DuckDB file.
       path: "{{ env_var('EDGAR_DB', 'warehouse/edgar.duckdb') }}"
       threads: 4

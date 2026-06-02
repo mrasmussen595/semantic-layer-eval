@@ -30,10 +30,12 @@ import duckdb
 import httpx
 import yaml
 
+from db import get_local_db_path
+
 ROOT = Path(__file__).resolve().parent.parent
 CONFIG_PATH = ROOT / "config" / "companies.yml"
 FIXTURES_DIR = ROOT / "fixtures" / "companyfacts"
-DB_PATH = ROOT / "warehouse" / "edgar.duckdb"
+DB_PATH = get_local_db_path()
 
 TICKER_MAP_URL = "https://www.sec.gov/files/company_tickers.json"
 COMPANYFACTS_URL = "https://data.sec.gov/api/xbrl/companyfacts/CIK{cik:010d}.json"
