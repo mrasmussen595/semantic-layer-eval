@@ -44,7 +44,7 @@ metrics:
   - name: total_revenue
     label: Total Revenue
     description: GAAP total revenue for the fiscal year, in USD.
-    synonyms: [revenue, total revenue, sales, top line, net revenue]
+    synonyms: [revenue, revenues, total revenue, sales, top line, net revenue]
     sql_expression: total_revenue
     format: usd
     grain: company_year

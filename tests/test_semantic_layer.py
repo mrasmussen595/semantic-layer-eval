@@ -51,6 +51,7 @@ def test_expression_validation_rejects_unknown_column(sl: SemanticLayer):
         ("revenue growth", Resolution.RESOLVED, ["revenue_growth_yoy"]),
         ("rule of 40", Resolution.RESOLVED, ["rule_of_40"]),
         ("total revenue", Resolution.RESOLVED, ["total_revenue"]),
+        ("revenues", Resolution.RESOLVED, ["total_revenue"]),
         ("margin", Resolution.AMBIGUOUS, None),
         ("profitability", Resolution.AMBIGUOUS, None),
         ("gross margin and operating margin", Resolution.AMBIGUOUS, None),
