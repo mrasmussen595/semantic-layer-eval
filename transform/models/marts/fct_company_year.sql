@@ -28,7 +28,12 @@ joined as (
 
 select
     *,
-    lag(total_revenue) over (
-        partition by ticker order by fiscal_year
-    ) as prev_total_revenue
+    case
+        when lag(fiscal_year) over (
+            partition by ticker order by fiscal_year
+        ) = fiscal_year - 1
+        then lag(total_revenue) over (
+            partition by ticker order by fiscal_year
+        )
+    end as prev_total_revenue
 from joined
