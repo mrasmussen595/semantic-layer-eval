@@ -200,5 +200,3 @@ dbt builds for MotherDuck are not automated by this repository.
 Data is SEC EDGAR (U.S. public domain). A 13 KB raw snapshot is committed under `fixtures/`
 for reproducible offline builds; the full 25 MB companyfacts JSON is re-fetchable and
 gitignored. Code is MIT (`LICENSE`).
-</content>
-</invoke>
