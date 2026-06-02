@@ -1,6 +1,6 @@
 {
   "project": "Governing the AI Analyst - semantic layer + MCP + DeepEval over real SEC SaaS financials",
-  "current_phase": 7,
+  "current_phase": "complete",
   "warehouse_mode": "local-duckdb",
   "pinned_versions": {
     "mcp": "1.27.2",
@@ -95,13 +95,14 @@
     {
       "id": 7,
       "name": "Story / polish",
-      "status": "pending",
+      "status": "done",
       "deliverables": [
         "README narrative + architecture diagram + demo",
         "CI green",
         "MotherDuck swap-in",
         "badges"
-      ]
+      ],
+      "notes": "README (thesis narrative + mermaid architecture diagram + behavior examples + quickstart + honest notes), badges, scripts/demo.py runnable walkthrough (no key), .github/workflows/ci.yml (offline build+dbt+lint+pytest+eval, uploads report; opt-in live-LLM job gated on ANTHROPIC_API_KEY secret), MotherDuck swap-in via db.py + docs. init.sh defaults to offline snapshot (REFRESH_EDGAR=1 for live). End-to-end clean rebuild verified. REMAINING (needs user): git push to GitHub + confirm repo slug for CI badge."
     }
   ]
 }

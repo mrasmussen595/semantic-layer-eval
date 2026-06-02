@@ -1,0 +1,59 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build-and-eval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Sync dependencies
+        run: uv sync --all-extras --group dev
+
+      - name: Load raw snapshot (offline; no EDGAR call)
+        run: uv run python -m ingest.load_fixture
+
+      - name: Build dbt models + run dbt tests (incl. filing anchors)
+        run: uv run dbt build --project-dir transform --profiles-dir transform
+
+      - name: Lint
+        run: uv run ruff check .
+
+      - name: Run test suite (semantic layer, MCP guards, governance eval)
+        run: uv run pytest -q
+
+      - name: Generate eval report
+        run: uv run python -m eval.harness
+
+      - name: Upload eval report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-report
+          path: eval/report/
+
+  # The live-LLM eval is opt-in and costs money, so it only runs when an
+  # ANTHROPIC_API_KEY secret is present (e.g. manual dispatch on a trusted branch).
+  live-eval:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --all-extras --group dev
+      - run: uv run python -m ingest.load_fixture
+      - run: uv run dbt build --project-dir transform --profiles-dir transform
+      - name: Live governance eval (Claude)
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          AGENT_USE_LLM: "1"
+        run: uv run python -m eval.harness
