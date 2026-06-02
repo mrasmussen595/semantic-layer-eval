@@ -213,6 +213,12 @@ def main() -> dict:
     print(f"Adversarial: {s['adversarial_passed']}/{s['adversarial_total']} passed")
     print(f"Planted wrong number caught: {s['planted_failure_caught']}")
     print(f"Report -> {REPORT_DIR / 'eval_report.md'}")
+    if (
+        s["golden_passed"] != s["golden_total"]
+        or s["adversarial_passed"] != s["adversarial_total"]
+        or not s["planted_failure_caught"]
+    ):
+        raise SystemExit("Governance eval failed")
     return report
 
 
