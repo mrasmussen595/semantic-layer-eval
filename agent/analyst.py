@@ -87,6 +87,36 @@ _DISPATCH = {
 }
 
 
+def _has_query_provenance(answer: dict, trace: list[dict]) -> bool:
+    resolved = False
+    for call in trace:
+        if call["tool"] == "resolve_metric":
+            result = call["result"]
+            resolved = (
+                result["status"] == tools.RESOLUTION_RESOLVED
+                and result["metrics"] == [answer.get("metric")]
+            )
+        elif call["tool"] == "query_metric" and resolved:
+            args = call["args"]
+            filters = args.get("filters") or {}
+            result = call["result"]
+            if (
+                args["metric"] == answer.get("metric")
+                and filters.get("company") == answer.get("company")
+                and filters.get("fiscal_year") == answer.get("fiscal_year")
+                and result["status"] == "ok"
+                and any(
+                    row["ticker"] == answer.get("company")
+                    and row["fiscal_year"] == answer.get("fiscal_year")
+                    and row["available"]
+                    and row["value"] == answer.get("value")
+                    for row in result["rows"]
+                )
+            ):
+                return True
+    return False
+
+
 def answer(question: str, model: str = DEFAULT_MODEL) -> AgentResponse:
     import anthropic  # imported here so the module loads without the SDK configured
 
@@ -114,6 +144,13 @@ def answer(question: str, model: str = DEFAULT_MODEL) -> AgentResponse:
         for tu in tool_uses:
             if tu.name == "final_answer":
                 a = tu.input
+                if not a.get("refused", True) and not _has_query_provenance(a, trace):
+                    return AgentResponse(
+                        question=question,
+                        refused=True,
+                        text="Governance rejected an answer without matching query provenance.",
+                        tool_trace=trace,
+                    )
                 return AgentResponse(
                     question=question,
                     refused=bool(a.get("refused", True)),
