@@ -47,20 +47,35 @@ pivoted as (
         max(value) filter (where concept = 'PaymentsToAcquireProductiveAssets') as capex_prod
     from f
     group by ticker, fiscal_year
+),
+
+-- Collapse each economic concept's candidate tags into one canonical column. The
+-- revenue and cost-of-revenue priority lists are defined here ONCE so the gross_profit
+-- fallback below reuses them instead of restating them.
+normalized as (
+    select
+        ticker,
+        fiscal_year,
+        fiscal_year_end_date,
+        coalesce(rev_excl, rev_incl, rev_revenues, rev_salesnet) as total_revenue,
+        coalesce(cor, cogs) as cost_of_revenue,
+        gross_profit_tag,
+        operating_income,
+        rnd_expense,
+        coalesce(ocf_main, ocf_cont) as operating_cash_flow,
+        coalesce(capex_ppe, capex_prod) as capex
+    from pivoted
 )
 
 select
     ticker,
     fiscal_year,
     fiscal_year_end_date,
-    coalesce(rev_excl, rev_incl, rev_revenues, rev_salesnet) as total_revenue,
-    coalesce(cor, cogs) as cost_of_revenue,
-    coalesce(
-        gross_profit_tag,
-        coalesce(rev_excl, rev_incl, rev_revenues, rev_salesnet) - coalesce(cor, cogs)
-    ) as gross_profit,
+    total_revenue,
+    cost_of_revenue,
+    coalesce(gross_profit_tag, total_revenue - cost_of_revenue) as gross_profit,
     operating_income,
     rnd_expense,
-    coalesce(ocf_main, ocf_cont) as operating_cash_flow,
-    coalesce(capex_ppe, capex_prod) as capex
-from pivoted
+    operating_cash_flow,
+    capex
+from normalized

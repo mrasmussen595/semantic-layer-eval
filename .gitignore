@@ -28,3 +28,7 @@ fixtures/companyfacts/
 
 # OS
 .DS_Store
+
+# Internal build-process scratch (not part of the deliverable)
+progress.json
+progress.txt
