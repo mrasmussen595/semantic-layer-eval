@@ -1,4 +1,4 @@
-# GOVERNED SEMANTIC LAYER — single source of truth for every metric.
+# GOVERNED SEMANTIC LAYER: single source of truth for every metric.
 #
 # Every metric has exactly one definition. The MCP server compiles SQL ONLY from this
 # file; the agent can never run raw SQL. `sql_expression` is a per-row expression over
@@ -12,7 +12,7 @@ source_table: main_marts.fct_company_year
 grain: company_year
 
 # Columns the compiler is allowed to reference. sql_expression is validated against this
-# allowlist at load time — anything else is rejected as a definition error.
+# allowlist at load time. Anything else is rejected as a definition error.
 allowed_columns:
   - total_revenue
   - prev_total_revenue

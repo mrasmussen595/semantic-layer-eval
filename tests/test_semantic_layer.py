@@ -1,4 +1,4 @@
-"""Phase 3 — semantic layer loading/validation, resolution, and ground truth."""
+"""Semantic layer loading/validation, resolution, and ground truth."""
 
 from __future__ import annotations
 

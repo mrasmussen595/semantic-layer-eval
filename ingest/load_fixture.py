@@ -1,4 +1,4 @@
-"""Rebuild raw.* in DuckDB from the committed parquet snapshot — no network.
+"""Rebuild raw.* in DuckDB from the committed parquet snapshot. No network.
 
 The live pipeline is ingest/fetch_edgar.py (hits SEC EDGAR). This module replays the
 frozen snapshot it exported, so CI and offline runs are fully deterministic. EDGAR data

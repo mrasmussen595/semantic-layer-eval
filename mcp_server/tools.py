@@ -1,4 +1,4 @@
-"""Governed tool functions — the entire surface the agent (or any MCP client) can use.
+"""Governed tool functions: the entire surface the agent (or any MCP client) can use.
 
 These four functions are the only way to reach the data, and none of them accepts SQL.
 Both the MCP server (server.py) and the in-process agent call exactly these, so the
@@ -57,8 +57,8 @@ def get_metric_definition(metric: str) -> dict[str, Any]:
 def resolve_metric(text: str) -> dict[str, Any]:
     """Map a free-text request to governed metric(s).
 
-    Returns status 'resolved' (exactly one), 'ambiguous' (more than one — the agent must
-    ask which), or 'out_of_scope' (none — the agent must refuse). This is the gate that
+    Returns status 'resolved' (exactly one), 'ambiguous' (more than one, the agent must
+    ask which), or 'out_of_scope' (none, the agent must refuse). This is the gate that
     makes refusal possible.
     """
     r = _SL.resolve(text)

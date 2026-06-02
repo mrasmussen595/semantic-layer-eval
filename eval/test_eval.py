@@ -1,4 +1,4 @@
-"""Phase 6 — the governance eval, runnable in CI against the deterministic reference agent.
+"""The governance eval, runnable in CI against the deterministic reference agent.
 
 Golden cases must match independent ground truth; adversarial cases must refuse; and the
 harness must catch a planted wrong number. The live Claude agent is graded by the same

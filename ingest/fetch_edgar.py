@@ -1,6 +1,6 @@
 """Pull 10-K XBRL financial facts from SEC EDGAR and land them in raw.* (DuckDB).
 
-Source: SEC's companyfacts API — one JSON per company containing every XBRL-tagged
+Source: SEC's companyfacts API, one JSON per company containing every XBRL-tagged
 value the company has ever filed:
 
     https://data.sec.gov/api/xbrl/companyfacts/CIK{10-digit-zero-padded}.json
@@ -63,13 +63,13 @@ WANTED_CONCEPTS = {
     # capex (duration)
     "PaymentsToAcquirePropertyPlantAndEquipment",
     "PaymentsToAcquireProductiveAssets",
-    # net income (duration) — context
+    # net income (duration), context
     "NetIncomeLoss",
     # deferred revenue / contract liability (instant)
     "ContractWithCustomerLiability",
     "ContractWithCustomerLiabilityCurrent",
     "DeferredRevenueCurrent",
-    # remaining performance obligation (instant) — disclosed inconsistently
+    # remaining performance obligation (instant), disclosed inconsistently
     "RevenueRemainingPerformanceObligation",
 }
 

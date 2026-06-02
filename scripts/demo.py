@@ -17,16 +17,16 @@ from agent import reference_agent  # noqa: E402
 
 WALKTHROUGH = [
     ("Governed answer", "What was Snowflake's total revenue in fiscal 2024?"),
-    ("Ambiguous -> refuse", "How's our margin looking?"),
-    ("Out of scope -> refuse", "What was Datadog's net dollar retention in 2023?"),
-    ("Non-GAAP trap -> refuse", "What was Snowflake's non-GAAP gross margin in fiscal 2024?"),
-    ("Unavailable -> refuse", "What was Workday's gross margin in fiscal 2024?"),
+    ("Ambiguous, refuse", "How's our margin looking?"),
+    ("Out of scope, refuse", "What was Datadog's net dollar retention in 2023?"),
+    ("Non-GAAP trap, refuse", "What was Snowflake's non-GAAP gross margin in fiscal 2024?"),
+    ("Unavailable, refuse", "What was Workday's gross margin in fiscal 2024?"),
 ]
 
 
 def main() -> None:
     print("=" * 78)
-    print("Governing the AI Analyst — governed semantic layer over SEC 10-K financials")
+    print("Governing the AI Analyst: governed semantic layer over SEC 10-K financials")
     print("=" * 78)
     for label, question in WALKTHROUGH:
         r = reference_agent.answer(question)

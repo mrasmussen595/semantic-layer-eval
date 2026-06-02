@@ -6,69 +6,74 @@
 [![built with dbt](https://img.shields.io/badge/built%20with-dbt-FF694B.svg)](transform/)
 [![eval: DeepEval](https://img.shields.io/badge/eval-DeepEval-7C3AED.svg)](eval/)
 
-**In one sentence:** AI analysts will confidently report financial numbers that are wrong
-or made-up — this project shows how to stop that, using the real SEC filings of 10 public
-SaaS companies, and proves it works with an automated fact-checker.
+AI analysts report financial numbers that are wrong or invented. This project forces the
+AI through an approved set of metrics and checks every answer against the source filings
+before anyone sees it. The data is real: the SEC 10-K filings of 10 public SaaS companies.
 
 ---
 
 ## For everyone (start here)
 
 ### The problem
-AI assistants are useful right up until they state a number with total confidence that is
-simply wrong — a revenue figure that doesn't match the filing, or a "gross margin" computed
-differently than your finance team would. In financial reporting, that isn't a quirk; it's
-the kind of mistake that gets people fired.
+
+An AI assistant is useful until it states a number, with full confidence, that is simply
+wrong. It might give a revenue figure that does not match the filing, or compute "gross
+margin" differently from the way your finance team would. In financial reporting, that kind
+of mistake gets people fired.
 
 ### The control
-Two guardrails, **enforced in code** — not merely requested in a prompt the AI can ignore:
 
-1. **An approved metric catalog** (the *semantic layer*). Every metric — revenue, gross
-   margin, Rule of 40 — has exactly **one** official definition. The AI can only use these.
-   It cannot write its own database query and cannot invent a metric.
-2. **An automated fact-checker** (the *eval harness*). Before any answer is trusted, it is
-   checked against an **independent** source of truth computed straight from the filings.
-   Wrong numbers get caught.
+Two guardrails, both enforced in code rather than asked for in a prompt the AI can ignore.
 
-And when a question can't be answered safely, the AI is **required to refuse and ask**
-instead of guessing:
-- *ambiguous* — "how's our margin?" could mean three different margins → ask which.
-- *out of scope* — "what's the stock price?" isn't a governed metric → decline.
-- *unavailable* — a company that doesn't report a metric → say so, don't estimate.
+1. **An approved metric catalog** (the semantic layer). Every metric, from revenue to gross
+   margin to Rule of 40, has exactly one official definition. The AI can use only these. It
+   cannot write its own database query and cannot invent a metric.
+2. **An automated fact-checker** (the eval harness). Every answer is checked against an
+   independent calculation taken straight from the filings. Wrong numbers are caught.
+
+When a question cannot be answered safely, the AI must refuse and ask rather than guess:
+
+- **Ambiguous.** "How's our margin?" could mean three different margins, so the AI asks which.
+- **Out of scope.** "What's the stock price?" is not a governed metric, so the AI declines.
+- **Unavailable.** When a company does not report a metric, the AI says so and does not estimate.
 
 ### See it in 10 seconds (no API key needed)
+
 ```bash
 uv run python scripts/demo.py
 ```
+
 ```
 [Governed answer]        total_revenue for SNOW FY2024 = 2806489000.0
-[Ambiguous -> refuse]    'margin' is ambiguous between fcf_margin, gross_margin,
-                         operating_margin — ask which one (and what fiscal year).
-[Out of scope -> refuse] net dollar retention is not a governed metric.
-[Non-GAAP trap -> refuse] the governed figure is GAAP; won't present it as non-GAAP.
-[Unavailable -> refuse]  Workday doesn't report a consolidated gross margin; won't estimate.
+[Ambiguous, refuse]      'margin' is ambiguous between fcf_margin, gross_margin and
+                         operating_margin; asks which one, and over what fiscal year.
+[Out of scope, refuse]   net dollar retention is not a governed metric.
+[Non-GAAP trap, refuse]  the governed figure is GAAP; will not pass it off as non-GAAP.
+[Unavailable, refuse]    Workday does not report a consolidated gross margin; no estimate.
 ```
 
 ### What it proves
+
 | | result |
 |---|---|
-| Golden questions — reported number matches independent ground truth | **9 / 9** |
-| Adversarial questions — agent refuses instead of guessing | **9 / 9** |
-| Planted wrong number — fact-checker catches it | **caught** |
+| Golden questions, reported number matches independent ground truth | **9 / 9** |
+| Adversarial questions, agent refuses instead of guessing | **9 / 9** |
+| Planted wrong number, fact-checker catches it | **caught** |
 
-The full report a reviewer would actually read:
-**[`eval/report/eval_report.md`](eval/report/eval_report.md)** (regenerated on every CI run).
+The full report is at [`eval/report/eval_report.md`](eval/report/eval_report.md), regenerated
+on every CI run.
 
 ### What's in the repo (plain-language map)
+
 | folder | what it does, in business terms |
 |---|---|
 | `ingest/` | Pulls the raw numbers from the SEC's official filing database. |
-| `transform/` | Cleans and standardizes them so every company is comparable (dbt). |
-| `semantic_layer/` | **The approved metric catalog** — one official definition per metric. |
+| `transform/` | Cleans and standardises them so every company is comparable (dbt). |
+| `semantic_layer/` | The approved metric catalog: one official definition per metric. |
 | `mcp_server/` | The only doorway the AI can use to get a number. No back doors, no raw queries. |
-| `agent/` | The AI analyst itself (plus an offline stand-in used for testing). |
-| `ground_truth/` | An **independent** calculator used to check the AI's answers. |
-| `eval/` | **The automated fact-checker** and the report it produces. |
+| `agent/` | The AI analyst itself, plus an offline stand-in used for testing. |
+| `ground_truth/` | An independent calculator used to check the AI's answers. |
+| `eval/` | The automated fact-checker and the report it produces. |
 
 ---
 
@@ -77,18 +82,18 @@ The full report a reviewer would actually read:
 ### Why this is a real test, not a toy
 
 1. **The data is audited and externally verifiable.** Ground truth is computed from SEC
-   XBRL facts and anchored to the actual filings (e.g. Snowflake FY2024 revenue =
-   `$2,806,489,000`). A reviewer can check it. Nobody can dismiss the eval as "made-up
-   data graded against a made-up answer."
-2. **The metric ambiguity is genuine.** SaaS financial metrics are contested *in the wild*:
-   - `gross_margin` — GAAP vs non-GAAP (does cost of revenue include stock-based comp?)
-   - `rule_of_40` — everyone agrees "growth % + profitability %", but the second term is
-     genuinely disputed (FCF margin? operating margin? EBITDA margin?). The governed layer
-     pins it to **FCF margin** — one definition, applied identically to all 10 companies.
-   - bare **"margin"** maps to three different governed metrics → the agent must ask which.
+   XBRL facts and anchored to the actual filings (Snowflake FY2024 revenue is
+   `$2,806,489,000`). A reviewer can check it. Nobody can dismiss the eval as made-up data
+   graded against a made-up answer.
+2. **The metric ambiguity is genuine.** SaaS financial metrics are contested in the wild:
+   - `gross_margin`: GAAP versus non-GAAP (does cost of revenue include stock-based comp?).
+   - `rule_of_40`: everyone agrees on "growth % plus profitability %", but the second term
+     is disputed (FCF margin? operating margin? EBITDA margin?). The governed layer pins it
+     to FCF margin, one definition applied identically to all 10 companies.
+   - bare "margin" maps to three different governed metrics, so the agent must ask which.
 3. **The governance is enforced in code, not just prompted.** There is no raw-SQL path
-   anywhere. The agent can only call governed tools, and SQL is compiled solely from the
-   semantic layer (proven by the guard tests in `tests/test_no_raw_sql.py`).
+   anywhere. The agent can call only governed tools, and SQL is compiled solely from the
+   semantic layer. The guard tests in `tests/test_no_raw_sql.py` prove it.
 
 ### Architecture
 
@@ -112,33 +117,34 @@ Seven metrics, defined once in `semantic_layer/metrics.yml`:
 
 | metric | definition | governance angle |
 |---|---|---|
-| `total_revenue` | GAAP total revenue | "which revenue line" |
-| `revenue_growth_yoy` | (rev − prior rev) / prior rev | — |
-| `gross_margin` | gross profit / revenue (GAAP) | GAAP vs non-GAAP; **admits gaps** (Workday) |
+| `total_revenue` | GAAP total revenue | which revenue line |
+| `revenue_growth_yoy` | (rev − prior rev) / prior rev | |
+| `gross_margin` | gross profit / revenue (GAAP) | GAAP vs non-GAAP; admits gaps (Workday) |
 | `operating_margin` | operating income / revenue (GAAP) | GAAP vs non-GAAP |
-| `rnd_intensity` | R&D / revenue | — |
+| `rnd_intensity` | R&D / revenue | |
 | `fcf_margin` | (operating cash flow − capex) / revenue | FCF definition disputed |
-| `rule_of_40` | `revenue_growth_yoy` + `fcf_margin` (points) | **contested second term, pinned** |
+| `rule_of_40` | `revenue_growth_yoy` + `fcf_margin` (points) | contested second term, pinned |
 
 Companies: Salesforce, Snowflake, Datadog, CrowdStrike, ServiceNow, Workday, HubSpot,
-Atlassian, MongoDB, Cloudflare — deliberately mixed fiscal calendars (Jan / Jun / Dec).
+Atlassian, MongoDB and Cloudflare. The fiscal calendars are deliberately mixed (Jan, Jun,
+Dec).
 
 ### How the agent behaves
 
 ```
 Q: "How's our margin looking?"
-A: REFUSED — 'margin' is ambiguous between gross_margin, operating_margin, fcf_margin.
+A: REFUSED. 'margin' is ambiguous between gross_margin, operating_margin and fcf_margin.
    Which one, and over what fiscal year?
 
 Q: "What was Workday's gross margin in fiscal 2024?"
-A: REFUSED — not available for WDAY FY2024 in the governed source (Workday does not tag a
+A: REFUSED. Not available for WDAY FY2024 in the governed source (Workday does not tag a
    consolidated gross profit). I won't estimate it.
 
 Q: "What was Snowflake's non-GAAP gross margin in fiscal 2024?"
-A: REFUSED — the governed metric is GAAP; a non-GAAP variant is not governed here.
+A: REFUSED. The governed metric is GAAP; a non-GAAP variant is not governed here.
 
 Q: "What was Snowflake's total revenue in fiscal 2024?"
-A: total_revenue for SNOW FY2024 = 2,806,489,000   (from query_metric, anchored to the 10-K)
+A: total_revenue for SNOW FY2024 = 2,806,489,000 (from query_metric, anchored to the 10-K).
 ```
 
 See it live: `uv run python scripts/demo.py` (no API key required).
@@ -147,11 +153,12 @@ See it live: `uv run python scripts/demo.py` (no API key required).
 
 ```bash
 cp .env.example .env        # optional: set ANTHROPIC_API_KEY for the live agent
-./init.sh                   # uv sync -> load snapshot -> dbt build -> run the eval
+./init.sh                   # uv sync, load snapshot, dbt build, run the eval
 ```
 
-`init.sh` uses a committed public-domain data snapshot by default (offline, reproducible).
-To pull fresh facts from live SEC EDGAR, set `SEC_USER_AGENT` and run with `REFRESH_EDGAR=1`.
+`init.sh` uses a committed public-domain data snapshot by default, so the build runs offline
+and reproducibly. To pull fresh facts from live SEC EDGAR, set `SEC_USER_AGENT` and run with
+`REFRESH_EDGAR=1`.
 
 Run the governance eval directly:
 
@@ -162,41 +169,42 @@ AGENT_USE_LLM=1 uv run python -m eval.harness # live Claude agent (needs ANTHROP
 
 ### How it works
 
-- **Ingest** (`ingest/fetch_edgar.py`) pulls the SEC `companyfacts` XBRL API, keeps only
-  the us-gaap concepts the metrics need on form 10-K, and lands long-format `raw.facts`.
-- **Transform** (`transform/`, dbt) normalizes inconsistent XBRL tags (e.g. CrowdStrike
-  tags revenue `...IncludingAssessedTax`, peers `...Excluding`) into one canonical
-  `marts.fct_company_year`. dbt tests fail the build if normalized revenue ever drifts
-  from the filing anchors.
-- **Semantic layer** (`semantic_layer/`) is the single source of truth. The loader
-  validates every `sql_expression` against a column allowlist and resolves free text to
-  metric(s) with longest-phrase precedence.
-- **MCP server** (`mcp_server/`) exposes exactly four governed tools. The compiler builds
-  SQL only from the definition; filter values are always bound parameters.
-- **Agent** (`agent/`) — a live Claude agent and a deterministic reference agent, both
-  emitting the same gradeable response, both bound to the governance contract.
-- **Eval** (`eval/`) — DeepEval metrics grade correctness vs an **independent** ground
-  truth (`ground_truth/truth_sql.py`, hand-written, not the compiler) and refusal behavior.
+- **Ingest** (`ingest/fetch_edgar.py`) pulls the SEC `companyfacts` XBRL API, keeps only the
+  us-gaap concepts the metrics need on form 10-K, and lands long-format `raw.facts`.
+- **Transform** (`transform/`, dbt) normalises inconsistent XBRL tags (CrowdStrike tags
+  revenue `...IncludingAssessedTax`, peers `...Excluding`) into one canonical
+  `marts.fct_company_year`. dbt tests fail the build if normalised revenue ever drifts from
+  the filing anchors.
+- **Semantic layer** (`semantic_layer/`) is the single source of truth. The loader validates
+  every `sql_expression` against a column allowlist and resolves free text to metric(s) with
+  longest-phrase precedence.
+- **MCP server** (`mcp_server/`) exposes exactly four governed tools. The compiler builds SQL
+  only from the definition, and filter values are always bound parameters.
+- **Agent** (`agent/`) provides a live Claude agent and a deterministic reference agent. Both
+  emit the same gradeable response and both obey the governance contract.
+- **Eval** (`eval/`) uses DeepEval metrics to grade correctness against an independent ground
+  truth (`ground_truth/truth_sql.py`, hand-written, not the compiler) and to grade refusal.
 
 ### Two honest notes
 
-- The eval's headline correctness/refusal numbers are produced by the **deterministic
-  reference agent**, so they run offline in CI with no API cost or nondeterminism. That
-  agent isolates the *governance mechanism*; the **live Claude agent** (`AGENT_USE_LLM=1`)
-  is what stress-tests an actual LLM under the same contract.
-- `gross_margin` is intentionally **null for Workday** — the company doesn't tag a
-  consolidated gross profit. The governed layer surfaces "not available" rather than
-  fabricating, which is itself part of the thesis.
+- The headline correctness and refusal numbers come from the deterministic reference agent,
+  so they run offline in CI with no API cost and no nondeterminism. That agent isolates the
+  governance mechanism. The live Claude agent (`AGENT_USE_LLM=1`) stress-tests an actual LLM
+  under the same contract.
+- `gross_margin` is deliberately null for Workday, which does not tag a consolidated gross
+  profit. The governed layer surfaces "not available" rather than fabricating a figure, and
+  that gap is part of the point.
 
 ### MotherDuck
 
-Development runs on local DuckDB. Set `EDGAR_DB` to route ingestion, dbt, and governed
-reads to another local DuckDB file. For governed reads against an existing MotherDuck
-database, set `MOTHERDUCK_TOKEN` and optionally `MOTHERDUCK_DATABASE`. Provisioning and
-dbt builds for MotherDuck are not automated by this repository.
+Development runs on local DuckDB. Set `EDGAR_DB` to route ingestion, dbt, and governed reads
+to another local DuckDB file. For governed reads against an existing MotherDuck database, set
+`MOTHERDUCK_TOKEN` and optionally `MOTHERDUCK_DATABASE`. Provisioning and dbt builds for
+MotherDuck are not automated by this repository.
 
 ### Data source & license
 
 Data is SEC EDGAR (U.S. public domain). A 13 KB raw snapshot is committed under `fixtures/`
 for reproducible offline builds; the full 25 MB companyfacts JSON is re-fetchable and
 gitignored. Code is MIT (`LICENSE`).
+</content>

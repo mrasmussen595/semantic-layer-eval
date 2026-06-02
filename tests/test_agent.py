@@ -1,4 +1,4 @@
-"""Phase 5 — the deterministic reference agent obeys the governance contract, and the
+"""The deterministic reference agent obeys the governance contract, and the
 live agent is wired to only the governed tools.
 """
 

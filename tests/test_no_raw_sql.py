@@ -1,4 +1,4 @@
-"""Phase 4 — the governance guarantee: there is no raw-SQL path, and caller-supplied
+"""The governance guarantee: there is no raw-SQL path, and caller-supplied
 values cannot become SQL. These tests are the teeth behind the thesis.
 """
 

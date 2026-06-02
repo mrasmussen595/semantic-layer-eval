@@ -1,4 +1,4 @@
-"""Deterministic governed agent — the governance contract with no LLM in the loop.
+"""Deterministic governed agent: the governance contract with no LLM in the loop.
 
 It uses exactly the governed tools (resolve_metric, query_metric) and applies the refusal
 rules directly. It exists so the eval and CI can run the full harness offline (no API key,

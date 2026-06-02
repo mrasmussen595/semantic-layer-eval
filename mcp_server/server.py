@@ -40,8 +40,8 @@ def get_metric_definition(metric: str) -> dict[str, Any]:
 @mcp.tool(
     description=(
         "Resolve a free-text request to governed metric(s). Returns status "
-        "'resolved' (one metric), 'ambiguous' (several — ask which), or 'out_of_scope' "
-        "(none — refuse)."
+        "'resolved' (one metric), 'ambiguous' (several, ask which), or 'out_of_scope' "
+        "(none, refuse)."
     )
 )
 def resolve_metric(text: str) -> dict[str, Any]:

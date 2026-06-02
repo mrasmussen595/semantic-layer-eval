@@ -3,7 +3,7 @@
 Responsibilities:
   * Parse metrics.yml into typed Metric objects.
   * Validate each sql_expression references ONLY allowlisted mart columns (a real
-    boundary check — a typo or an attempt to reference another table is a load error).
+    boundary check; a typo or an attempt to reference another table is a load error).
   * Resolve free-text terms to metric(s) with longest-phrase precedence, returning a
     RESOLVED / AMBIGUOUS / OUT_OF_SCOPE result. This is what lets the agent refuse
     instead of guessing.

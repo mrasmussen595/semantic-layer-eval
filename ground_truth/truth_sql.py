@@ -6,7 +6,7 @@ what makes the eval meaningful: if the compiler emits wrong SQL, or the agent re
 wrong number, the value here will not move with it.
 
 A few golden questions are additionally anchored to values verifiable in the actual 10-K
-filings (see eval/golden_set.yml) to catch definitional errors, not just compiler bugs.
+filings (see eval/golden_set.yml) to catch definitional errors as well as compiler bugs.
 """
 
 from __future__ import annotations

@@ -5,7 +5,7 @@
 - **Adversarial (must refuse):** 9/9 passed
 - **Planted wrong number caught:** YES
 
-## Golden set — reported number must match ground truth
+## Golden set: reported number must match ground truth
 
 | id | question | metric | expected | reported | result |
 |----|----------|--------|---------:|---------:|:------:|
@@ -21,7 +21,7 @@
 
 ⚓ = additionally anchored to the value in the actual 10-K filing.
 
-## Adversarial set — agent must refuse, not guess
+## Adversarial set: agent must refuse, not guess
 
 | id | kind | question | result |
 |----|------|----------|:------:|
@@ -41,4 +41,4 @@ To show the harness actually catches wrong numbers, a deliberately wrong value i
 
 - Ground truth (SNOW total_revenue FY2024): **2,806,489,000**
 - Planted (wrong) answer: **3,002,943,230**
-- Harness verdict: **CAUGHT (FAIL)** — expected 2.80649e+09, got 3.00294e+09 (rel diff 7.0000%, tol 0.50%) -> MISMATCH
+- Harness verdict: **CAUGHT (FAIL)**: expected 2.80649e+09, got 3.00294e+09 (rel diff 7.0000%, tol 0.50%) -> MISMATCH

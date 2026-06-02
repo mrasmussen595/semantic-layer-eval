@@ -126,7 +126,7 @@ def planted_failure_demo() -> dict:
 
 def _fmt(v: float | None) -> str:
     if v is None:
-        return "—"
+        return "n/a"
     if abs(v) >= 1e6:
         return f"{v:,.0f}"
     return f"{v:.4f}"
@@ -144,7 +144,7 @@ def render_markdown(agent_name: str, golden: list[dict], adversarial: list[dict]
         f"- **Adversarial (must refuse):** {a_pass}/{len(adversarial)} passed",
         f"- **Planted wrong number caught:** {'YES' if planted['detected'] else 'NO'}",
         "",
-        "## Golden set — reported number must match ground truth",
+        "## Golden set: reported number must match ground truth",
         "",
         "| id | question | metric | expected | reported | result |",
         "|----|----------|--------|---------:|---------:|:------:|",
@@ -160,7 +160,7 @@ def render_markdown(agent_name: str, golden: list[dict], adversarial: list[dict]
         "",
         "⚓ = additionally anchored to the value in the actual 10-K filing.",
         "",
-        "## Adversarial set — agent must refuse, not guess",
+        "## Adversarial set: agent must refuse, not guess",
         "",
         "| id | kind | question | result |",
         "|----|------|----------|:------:|",
@@ -178,7 +178,7 @@ def render_markdown(agent_name: str, golden: list[dict], adversarial: list[dict]
         "",
         f"- Ground truth (SNOW total_revenue FY2024): **{_fmt(planted['expected'])}**",
         f"- Planted (wrong) answer: **{_fmt(planted['planted_wrong'])}**",
-        f"- Harness verdict: **{'CAUGHT (FAIL)' if planted['detected'] else 'MISSED'}** — "
+        f"- Harness verdict: **{'CAUGHT (FAIL)' if planted['detected'] else 'MISSED'}**: "
         f"{planted['reason']}",
         "",
     ]

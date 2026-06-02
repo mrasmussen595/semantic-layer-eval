@@ -1,4 +1,4 @@
-"""Phase 4 — the compiler produces correct, parameterized SQL and runs it."""
+"""The compiler produces correct, parameterized SQL and runs it."""
 
 from __future__ import annotations
 
