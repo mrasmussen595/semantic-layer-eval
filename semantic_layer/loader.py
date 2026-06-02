@@ -144,10 +144,10 @@ class SemanticLayer:
                     + ", ".join(sorted(self.metrics))
                 ),
             )
-        matched: list[tuple[frozenset[str], frozenset[str]]] = []  # (tokens, metrics)
+        matched: list[tuple[str, frozenset[str], frozenset[str]]] = []
         for syn, metric_names in self._synonym_index.items():
             if self._phrase_present(syn, t):
-                matched.append((frozenset(syn.split()), metric_names))
+                matched.append((syn, frozenset(syn.split()), metric_names))
 
         if not matched:
             return ResolutionResult(
@@ -158,11 +158,16 @@ class SemanticLayer:
                 ),
             )
 
-        # Drop synonyms whose tokens are a strict subset of another matched synonym.
+        # Drop shorter synonyms only when every occurrence is contained in a longer
+        # matched phrase. A separately requested shorter metric must survive.
         maximal = [
             (tokens, names)
-            for tokens, names in matched
-            if not any(tokens < other for other, _ in matched)
+            for syn, tokens, names in matched
+            if self._phrase_has_uncovered_occurrence(
+                syn,
+                [other_syn for other_syn, other, _ in matched if tokens < other],
+                t,
+            )
         ]
         specific = sorted(
             {n for tokens, names in maximal if len(names) == 1 for n in names}
@@ -184,3 +189,21 @@ class SemanticLayer:
     @staticmethod
     def _phrase_present(phrase: str, text: str) -> bool:
         return re.search(rf"(?<!\w){re.escape(phrase)}(?!\w)", text) is not None
+
+    @staticmethod
+    def _phrase_has_uncovered_occurrence(
+        phrase: str, covering_phrases: list[str], text: str
+    ) -> bool:
+        pattern = rf"(?<!\w){re.escape(phrase)}(?!\w)"
+        covering_spans = [
+            match.span()
+            for covering in covering_phrases
+            for match in re.finditer(rf"(?<!\w){re.escape(covering)}(?!\w)", text)
+        ]
+        return any(
+            not any(
+                cover_start <= start and end <= cover_end
+                for cover_start, cover_end in covering_spans
+            )
+            for start, end in (match.span() for match in re.finditer(pattern, text))
+        )

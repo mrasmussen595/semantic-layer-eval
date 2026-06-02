@@ -73,6 +73,12 @@ def test_ambiguous_margin_surfaces_all_three(sl: SemanticLayer):
     assert set(r.metrics) == {"gross_margin", "operating_margin", "fcf_margin"}
 
 
+def test_compound_request_preserves_each_explicit_metric(sl: SemanticLayer):
+    r = sl.resolve("Snowflake revenue and revenue growth in fiscal 2024")
+    assert r.status == Resolution.AMBIGUOUS
+    assert set(r.metrics) == {"total_revenue", "revenue_growth_yoy"}
+
+
 # ---- ground truth (requires the built warehouse) ----------------------------
 
 
